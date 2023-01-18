@@ -2,6 +2,7 @@ html,
 body {
 	margin: 0;
 	padding: 0;
+
 	color: var(--black);
 
 	font-family: var(--font-family);
@@ -17,16 +18,26 @@ a {
 	box-sizing: border-box;
 }
 
+.visualy-hidden {
+	position: absolute;
+
+	overflow: hidden;
+
+	width: 0;
+	height: 0;
+}
+
 :root {
 	--black: #3B434E;
 	--gray-light: #EBEBEB;
 	--gray: #A4A4A4;
-	--gray-dark: #787D85;
+	--gray-dark: #6C7076;
 	--white: white;
-	--primary: #7653FC;
-	--primary-hover: #4c37a0;
+	--primary: #7351F5;
+	--primary-hover: #4C37A0;
 	--red: #FC836D;
-	--green: #1DC37E;
+	--red-light: #FDAEA0;
+	--green: #037A49;
 	--green-light: #C8F8E4;
 	--font-family: "Noto Sans", sans-serif;
 }

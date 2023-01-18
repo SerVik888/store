@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prepare": "husky install",
     "dev": "next dev",
     "debug": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
@@ -19,9 +20,12 @@
     "date-fns": "^2.29.3",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.2",
+    "framer-motion": "^8.1.9",
     "next": "13.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.41.5",
+    "react-yandex-metrika": "^2.6.0",
     "typescript": "4.8.4"
   },
   "devDependencies": {
@@ -30,6 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.3",
     "stylelint": "^14.14.1",
     "stylelint-config-standard": "^29.0.0",
     "stylelint-order": "^5.0.0",

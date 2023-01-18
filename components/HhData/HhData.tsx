@@ -14,13 +14,13 @@ export const HhData = ({
 		<div className={s.hh}>
 			<Card className={s.count}>
 				<div className={s.title}>Всего вакансий</div>
-				<div className={s.countValue}>{count}</div>
+				<div className={s["count-value"]}>{count}</div>
 			</Card>
 
 			<Card className={s.salary}>
 				<div>
 					<div className={s.title}>Начальный</div>
-					<div className={s.salaryValue}>{priceRu(juniorSalary)}</div>
+					<div className={s["salary-value"]}>{priceRu(juniorSalary)}</div>
 					<div className={s.rate}>
 						<StarIcon className={s.filled} />
 						<StarIcon />
@@ -30,7 +30,7 @@ export const HhData = ({
 
 				<div>
 					<div className={s.title}>Средний</div>
-					<div className={s.salaryValue}>{priceRu(middleSalary)}</div>
+					<div className={s["salary-value"]}>{priceRu(middleSalary)}</div>
 					<div className={s.rate}>
 						<StarIcon className={s.filled} />
 						<StarIcon className={s.filled} />
@@ -40,7 +40,7 @@ export const HhData = ({
 
 				<div>
 					<div className={s.title}>Профессионал</div>
-					<div className={s.salaryValue}>{priceRu(seniorSalary)}</div>
+					<div className={s["salary-value"]}>{priceRu(seniorSalary)}</div>
 					<div className={s.rate}>
 						<StarIcon className={s.filled} />
 						<StarIcon className={s.filled} />
