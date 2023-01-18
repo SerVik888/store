@@ -28,7 +28,7 @@ export const ReviewForm = ({
 	} = useForm<IReviewForm>();
 
 	const [isSuccess, setIsSuccess] = useState<boolean>(false);
-	const [error, setError] = useState<string>();
+	const [error, setError] = useState<string>("");
 
 	const onSubmit = async (formData: IReviewForm) => {
 		try {
@@ -42,8 +42,8 @@ export const ReviewForm = ({
 			} else {
 				setError("Что-то пошло не так");
 			}
-		} catch (e) {
-			setError(e.message);
+		} catch {
+			setError("Что-то пошло не так");
 		}
 	};
 
@@ -121,7 +121,7 @@ export const ReviewForm = ({
 					<button
 						className={s.close}
 						onClick={() => {
-							setError(undefined);
+							setError("undefined");
 						}}
 						aria-label="Закрыть оповещение">
 						<CloseIcon />
