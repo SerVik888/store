@@ -1,21 +1,46 @@
 import s from "./Menu.module.css";
 import cn from "classnames";
-import { useContext } from "react";
+import { KeyboardEvent, useContext, useState } from "react";
 import { AppContext } from "../../context/app.context";
 import { FirstLevelMenuItem, PageItem } from "../../interfaces/menu.interface";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { firstLevelMenu } from "../../helpers/helpers";
+import { motion, useReducedMotion } from "framer-motion";
 
 export const Menu = (): JSX.Element => {
 	const { menu, setMenu, firstCategory } = useContext(AppContext);
+	const [announce, setAnnounce] = useState<"closed" | "opened" | undefined>();
+	const shouldReduceMotion = useReducedMotion();
 	const router = useRouter();
+
+	const variants = {
+		visible: {
+			marginBottom: 20,
+			transition: shouldReduceMotion
+				? {}
+				: {
+						when: "beforeChildren",
+						staggerChildren: 0.1,
+				  },
+		},
+		hidden: { marginBottom: 0 },
+	};
+
+	const variantsChildren = {
+		visible: {
+			opacity: 1,
+			height: 29,
+		},
+		hidden: { opacity: shouldReduceMotion ? 1 : 0, height: 0 },
+	};
 
 	const openSecondLevel = (secondCategory: string) => {
 		setMenu &&
 			setMenu(
 				menu.map((m) => {
 					if (m._id.secondCategory == secondCategory) {
+						setAnnounce(m.isOpened ? "closed" : "opened");
 						m.isOpened = !m.isOpened;
 					}
 					return m;
@@ -23,60 +48,91 @@ export const Menu = (): JSX.Element => {
 			);
 	};
 
+	const openSecondLevelKey = (key: KeyboardEvent, secondCategory: string) => {
+		if (key.code == "Space" || key.code == "Enter") {
+			key.preventDefault();
+			openSecondLevel(secondCategory);
+		}
+	};
+
 	const buildFirstLevel = () => {
 		return (
-			<>
+			<ul className={s["first-level-list"]}>
 				{firstLevelMenu.map((m) => (
-					<div key={m.route}>
+					<li key={m.route} aria-expanded={m.id == firstCategory}>
 						<Link href={`/${m.route}`}>
-							<div className={cn(s.firstLevel, { [s.firstLevelActive]: m.id == firstCategory })}>
+							<div
+								className={cn(s["first-level"], {
+									[s["first-level-active"]]: m.id == firstCategory,
+								})}>
 								{m.icon}
 								<span>{m.name}</span>
 							</div>
 						</Link>
 
 						{m.id == firstCategory && buildSecondLevel(m)}
-					</div>
+					</li>
 				))}
-			</>
+			</ul>
 		);
 	};
+
 	const buildSecondLevel = (menuItem: FirstLevelMenuItem) => {
 		return (
-			<div className={s.secondBlock}>
+			<ul className={s["second-block"]}>
 				{menu.map((m) => {
 					if (m.pages.map((p) => p.alias).includes(router.asPath.split("/")[2])) {
 						m.isOpened = true;
 					}
 					return (
-						<div key={m._id.secondCategory}>
-							<div className={s.secondLevel} onClick={() => openSecondLevel(m._id.secondCategory)}>
+						<li key={m._id.secondCategory}>
+							<button
+								className={s["second-level"]}
+								onKeyDown={(key: KeyboardEvent) => openSecondLevelKey(key, m._id.secondCategory)}
+								onClick={() => openSecondLevel(m._id.secondCategory)}
+								aria-expanded={m.isOpened}>
 								{m._id.secondCategory}
-							</div>
-							<div className={cn(s.secondLevelBlock, { [s.secondLevelBlockOpened]: m.isOpened })}>
-								{buildThirdLevel(m.pages, menuItem.route)}
-							</div>
-						</div>
+							</button>
+							<motion.ul
+								layout
+								variants={variants}
+								initial={m.isOpened ? "visible" : "hidden"}
+								animate={m.isOpened ? "visible" : "hidden"}
+								className={s["second-level-block"]}>
+								{buildThirdLevel(m.pages, menuItem.route, m.isOpened ?? false)}
+							</motion.ul>
+						</li>
 					);
 				})}
-			</div>
+			</ul>
 		);
 	};
-	const buildThirdLevel = (pages: PageItem[], route: string) => {
+	const buildThirdLevel = (pages: PageItem[], route: string, isOpened: boolean) => {
 		return pages.map((p) => (
-			<Link href={`/${route}/${p.alias}`}>
-				<div
-					className={cn(s.thirdLevel, {
-						[s.thirdLevelActive]: `/${route}/${p.alias}` == router.asPath,
-					})}>
-					{p.category}
-				</div>
-			</Link>
+			<motion.li key={p._id} variants={variantsChildren}>
+				<Link
+					tabIndex={isOpened ? 0 : -1}
+					href={`/${route}/${p.alias}`}
+					className={s["third-level-link"]}
+					aria-current={`/${route}/${p.alias}` == router.asPath ? "page" : false}>
+					<div
+						className={cn(s["third-level"], {
+							[s["third-level-active"]]: `/${route}/${p.alias}` == router.asPath,
+						})}>
+						{p.category}
+					</div>
+				</Link>
+			</motion.li>
 		));
 	};
 	return (
-		<div className={s.menu}>
+		<nav className={s.menu} role="navigation">
+			{announce && (
+				<span role="log" className="visualy-hidden">
+					{announce == "opened" ? "развёрнуто" : "свёрнуто"}
+				</span>
+			)}
 			<ul>{buildFirstLevel()}</ul>
-		</div>
+		</nav>
 	);
 };
